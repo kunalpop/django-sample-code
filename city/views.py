@@ -4,9 +4,38 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from .models import City
 from .serializers import CitySerializer
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
-# Create your views here.
-
+json_schema = openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "unloc_code": openapi.Schema(type=openapi.TYPE_STRING),
+                "name": openapi.Schema(type=openapi.TYPE_STRING),
+                "city": openapi.Schema(type=openapi.TYPE_STRING),
+                "country": openapi.Schema(type=openapi.TYPE_STRING),
+                "province": openapi.Schema(type=openapi.TYPE_STRING),
+                "timezone": openapi.Schema(type=openapi.TYPE_STRING),
+                "alias": openapi.Schema(type=openapi.TYPE_ARRAY,items=openapi.Items(type=openapi.TYPE_STRING)),
+                "region": openapi.Schema(type=openapi.TYPE_ARRAY,items=openapi.Items(type=openapi.TYPE_STRING)),
+                "coordinates_lat": openapi.Schema(type=openapi.TYPE_NUMBER),
+                "coordinates_lon": openapi.Schema(type=openapi.TYPE_NUMBER),
+                "code": openapi.Schema(type=openapi.TYPE_STRING),
+            },
+            example={
+                    "unloc_code": "NWCTY",
+                    "name": "NEWCITY",
+                    "city": "New City",
+                    "country": "Zimbabwe",
+                    "province": "Manicaland",
+                    "timezone": "Africa/Harare",
+                    "alias": [],
+                    "regions": [],
+                    "coordinates_lat": -19.9757714,
+                    "coordinates_lon": 31.650351,
+                    "code": "55555"
+            }
+        )
 
 class ListCitiesView(APIView):
     #List all cities
@@ -22,6 +51,7 @@ class CrudView(APIView):
         return get_object_or_404(City, unloc_code=unloc_code)
 
     #Create City
+    @swagger_auto_schema(request_body=json_schema,responses={200: json_schema}) 
     def post(self, request,unloc_code):
         city = City.objects.filter(unloc_code=unloc_code)
 
@@ -41,6 +71,7 @@ class CrudView(APIView):
         return Response(serializer.data)
 
     #Update City
+    @swagger_auto_schema(request_body=json_schema,responses={200: json_schema})
     def patch(self, request, unloc_code):
         city = self.get_city(unloc_code)
         serializer = CitySerializer(city, data=request.data)

@@ -36,6 +36,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "city",
+    "rest_framework",
+    "drf_yasg",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -80,7 +82,7 @@ WSGI_APPLICATION = "assignment.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': os.getenv("DB_ENGINE",'django.db.backends.postgresql_psycopg2'),
         'NAME': os.getenv("DB_NAME"), 
         'USER': os.getenv("DB_USER"),
         'PASSWORD': os.getenv("DB_PASSWORD"),
@@ -133,3 +135,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 APPEND_SLASH=False
+
